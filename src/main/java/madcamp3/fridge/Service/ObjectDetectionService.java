@@ -2,12 +2,11 @@ package madcamp3.fridge.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import madcamp3.fridge.Domain.DetectedItem;
+import madcamp3.fridge.Dto.DetectionResult;
 import madcamp3.fridge.Repository.DetectedItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -15,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import org.springframework.http.HttpHeaders;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,16 +61,22 @@ public class ObjectDetectionService {
         List<DetectedItem> savedItems = new ArrayList<>();
         if (response.getBody() != null) {
             for (DetectionResult result : response.getBody()) {
-                DetectedItem item = new DetectedItem();
-                item.setItemName(result.getLabel());
-                item.setConfidence(result.getConfidence());
-                item.setDetectedAt(LocalDateTime.now());
-                // 이미지 저장 로직 구현 필요
+                DetectedItem item = DetectedItem.builder()
+                        .itemName(result.getLabel())
+                        .confidence(result.getConfidence())
+                        .detectedAt(LocalDateTime.now())
+                        // .imageUrl("tempURL") // 이미지 저장은 굳이 안해도 됨
+                        .expirationAt(LocalDateTime.now().plusDays(7)) // 기본 유통기한 7일로 설정, 필요에 따라 조정
+                        .build();
                 savedItems.add(repository.save(item));
             }
         }
 
         return savedItems;
 
+    }
+
+    public List<DetectedItem> getAllItems() {
+        return repository.findAll();
     }
 }

@@ -1,5 +1,6 @@
 package madcamp3.fridge.Controller;
 
+import lombok.extern.slf4j.Slf4j;
 import madcamp3.fridge.Domain.DetectedItem;
 import madcamp3.fridge.Service.ObjectDetectionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/detection")
+@Slf4j
 public class ObjectDetectionController {
     private final ObjectDetectionService detectionService;
 
