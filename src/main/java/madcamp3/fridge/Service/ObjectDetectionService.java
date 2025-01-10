@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class ObjectDetectionService {
-    private final String YOLO_API_URL = "http://localhost:5000/detect";
+    private final String YOLO_API_URL = "http://localhost:5001/detect";
     private final RestTemplate restTemplate;
     private final DetectedItemRepository repository;
 
