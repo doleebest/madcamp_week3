@@ -88,18 +88,17 @@ public class ObjectDetectionService {
         DetectedItem item = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Item not found with id: " + id));
 
-        if (request. getItemName() != null){
-            item.setItemName(request.getItemName());
-        }
-        if (request.getAmount() != null) {
-            item.setAmount(request.getAmount());
-        }
-        if (request.getUnit() != null) {
-            item.setUnit(request.getUnit());
-        }
-        if (request.getExpirationAt() != null) {
-            item.setExpirationAt(request.getExpirationAt());
-        }
+        // Builder 패턴을 사용하여 업데이트
+        DetectedItem updatedItem = DetectedItem.builder()
+                .id(item.getId())
+                .itemName(request.getItemName() != null ? request.getItemName() : item.getItemName())
+                .amount(request.getAmount() != null ? request.getAmount() : item.getAmount())
+                .unit(request.getUnit() != null ? request.getUnit() : item.getUnit())
+                .expirationAt(request.getExpirationAt() != null ? request.getExpirationAt() : item.getExpirationAt())
+                .confidence(item.getConfidence())
+                .detectedAt(item.getDetectedAt())
+                .imageUrl(item.getImageUrl())
+                .build();
 
         return repository.save(item);
     }
