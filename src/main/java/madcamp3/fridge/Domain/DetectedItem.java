@@ -25,6 +25,10 @@ public class DetectedItem {
     private Double amount;    // 양
     private String unit;      // 단위 (g, kg, ml, L, 개, 개입, 매, 팩 등)
 
+    @ManyToOne
+    @JoinColumn(name = "frdige_id")
+    private Fridge fridge;
+
     @Builder
     public DetectedItem(
             Long id,
