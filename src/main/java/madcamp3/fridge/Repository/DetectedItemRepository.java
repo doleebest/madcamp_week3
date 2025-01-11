@@ -10,4 +10,5 @@ import java.util.List;
 public interface DetectedItemRepository extends JpaRepository<DetectedItem, Long> {
     List<DetectedItem> findByDetectedAtBetween(LocalDateTime start, LocalDateTime end);
     List<DetectedItem> findByFridge(Fridge fridge);
+    List<DetectedItem> findByFridgeUserId(String userId);
 }
