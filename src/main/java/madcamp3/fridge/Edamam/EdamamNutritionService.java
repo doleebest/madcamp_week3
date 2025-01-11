@@ -3,7 +3,9 @@ package madcamp3.fridge.Edamam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import madcamp3.fridge.Domain.DetectedItem;
+import madcamp3.fridge.Dto.HealthScoreResponse;
 import madcamp3.fridge.Repository.DetectedItemRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,7 +19,6 @@ import java.util.*;
 public class EdamamNutritionService {
     private final EdamamConfig edamamConfig;
     private final RestTemplate restTemplate;
-    //private final KakaoMessageService kakaoMessageService;
     private final DetectedItemRepository itemRepository;
 
     public HealthScoreResponse calculateOverallHealthScore() {
@@ -40,14 +41,46 @@ public class EdamamNutritionService {
 
         double averageScore = totalScore / items.size();
 
-//        // 건강도가 낮은 경우 카카오톡 알림 발송
-//        if (averageScore <= 60.0) {
-//            String message = createAlertMessage(averageScore, itemScores);
-//            kakaoMessageService.sendMessage(message);
-//        }
-//
-//        return createHealthScoreResponse(averageScore, itemScores);
-    // }
+        // 영양 균형 체크 및 제안사항 생성
+        if (averageScore < 60.0) {
+            suggestions.add("전반적으로 더 건강한 식재료가 필요합니다.");
+        }
+        checkNutritionalBalance(items, suggestions);
+
+        return new HealthScoreResponse(averageScore, suggestions, averageScore > 60.0);
+    }
+
+    private void checkNutritionalBalance(List<DetectedItem> items, List<String> suggestions) {
+        boolean hasVegetables = false;
+        boolean hasFruits = false;
+        boolean hasProtein = false;
+
+        for (DetectedItem item : items) {
+            String name = item.getItemName().toLowerCase();
+            if (isVegetable(name)) hasVegetables = true;
+            if (isFruit(name)) hasFruits = true;
+            if (isProtein(name)) hasProtein = true;
+        }
+
+        if (!hasVegetables) suggestions.add("채소류가 부족합니다.");
+        if (!hasFruits) suggestions.add("과일류가 부족합니다.");
+        if (!hasProtein) suggestions.add("단백질 식품이 부족합니다.");
+    }
+
+    private boolean isVegetable(String name) {
+        Set<String> vegetables = Set.of("양배추", "당근", "시금치", "브로콜리", "양파", "마늘", "파");
+        return vegetables.contains(name);
+    }
+
+    private boolean isFruit(String name) {
+        Set<String> fruits = Set.of("사과", "바나나", "오렌지", "포도", "딸기", "키위");
+        return fruits.contains(name);
+    }
+
+    private boolean isProtein(String name) {
+        Set<String> proteins = Set.of("닭고기", "돼지고기", "소고기", "계란", "두부", "생선");
+        return proteins.contains(name);
+    }
 
     private double getHealthScore(String foodName) {
         try {
@@ -73,31 +106,17 @@ public class EdamamNutritionService {
     private double calculateScoreFromNutrition(EdamamResponse nutrition) {
         double score = 70.0; // 기본 점수
 
-        // 영양소 기반 점수 계산
-        if (nutrition.getHealthLabels().contains("VEGETARIAN")) score += 5;
-        if (nutrition.getHealthLabels().contains("LOW_FAT")) score += 5;
-        if (nutrition.getHealthLabels().contains("LOW_SODIUM")) score += 5;
+        if (nutrition.getHealthLabels() != null) {
+            if (nutrition.getHealthLabels().contains("VEGETARIAN")) score += 5;
+            if (nutrition.getHealthLabels().contains("LOW_FAT")) score += 5;
+            if (nutrition.getHealthLabels().contains("LOW_SODIUM")) score += 5;
+        }
 
-        // 영양소별 점수 조정
-        Double calories = nutrition.getTotalNutrients().getCalories();
-        if (calories != null && calories < 300) score += 5;
+        if (nutrition.getTotalNutrients() != null) {
+            Double calories = nutrition.getTotalNutrients().getCalories();
+            if (calories != null && calories < 300) score += 5;
+        }
 
         return Math.min(100, Math.max(0, score));
-    }
-
-    private String createAlertMessage(double averageScore, Map<String, Double> itemScores) {
-        StringBuilder message = new StringBuilder();
-        message.append(String.format("⚠️ 자녀분의 냉장고 건강도 알림 ⚠️\n\n현재 건강도: %.1f점\n\n", averageScore));
-        message.append("📊 식품별 건강도:\n");
-
-        itemScores.entrySet().stream()
-                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
-                .forEach(entry ->
-                        message.append(String.format("- %s: %.1f점\n", entry.getKey(), entry.getValue()))
-                );
-
-        message.append("\n건강한 식단을 위해 부모님의 맘스터치가 필요합니다!");
-
-        return message.toString();
     }
 }
