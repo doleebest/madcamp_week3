@@ -2,6 +2,8 @@ package madcamp3.fridge.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import madcamp3.fridge.Domain.DetectedItem;
+import madcamp3.fridge.Dto.DetectedItemCreateRequest;
+import madcamp3.fridge.Dto.DetectedItemUpdateRequest;
 import madcamp3.fridge.Dto.DetectionResult;
 import madcamp3.fridge.Repository.DetectedItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +59,6 @@ public class ObjectDetectionService {
                 DetectionResult[].class
         );
 
-        // 결과를 DB에 저장
         List<DetectedItem> savedItems = new ArrayList<>();
         if (response.getBody() != null) {
             for (DetectionResult result : response.getBody()) {
@@ -65,12 +66,14 @@ public class ObjectDetectionService {
                         .itemName(result.getLabel())
                         .confidence(result.getConfidence())
                         .detectedAt(LocalDateTime.now())
-                        // .imageUrl("tempURL") // 이미지 저장은 굳이 안해도 됨
-                        .expirationAt(LocalDateTime.now().plusDays(7)) // 기본 유통기한 7일로 설정, 필요에 따라 조정
+                        .expirationAt(LocalDateTime.now().plusDays(7))
+                        .amount(result.getAmount())
+                        .unit(result.getUnit())
                         .build();
                 savedItems.add(repository.save(item));
             }
         }
+
 
         return savedItems;
 
@@ -79,4 +82,40 @@ public class ObjectDetectionService {
     public List<DetectedItem> getAllItems() {
         return repository.findAll();
     }
+
+    // detect 된 아이템 정보 수정
+    public DetectedItem updateItem(Long id, DetectedItemUpdateRequest request){
+        DetectedItem item = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Item not found with id: " + id));
+
+        if (request. getItemName() != null){
+            item.setItemName(request.getItemName());
+        }
+        if (request.getAmount() != null) {
+            item.setAmount(request.getAmount());
+        }
+        if (request.getUnit() != null) {
+            item.setUnit(request.getUnit());
+        }
+        if (request.getExpirationAt() != null) {
+            item.setExpirationAt(request.getExpirationAt());
+        }
+
+        return repository.save(item);
+    }
+
+    // 아이템 수동 추가
+    public DetectedItem addItemManually(DetectedItemCreateRequest request) {
+        DetectedItem newItem = DetectedItem.builder()
+                .itemName(request.getItemName())
+                .amount(request.getAmount())
+                .unit(request.getUnit())
+                .detectedAt(LocalDateTime.now())
+                .expirationAt(request.getExpirationAt())
+                .confidence(1.0) // 수동 추가는 100% 확실
+                .build();
+
+        return repository.save(newItem);
+    }
 }
+
