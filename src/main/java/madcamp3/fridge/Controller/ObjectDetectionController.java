@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import madcamp3.fridge.Dto.DetectedItemUpdateRequest;
+import madcamp3.fridge.Dto.DetectedItemCreateRequest;  // 추가
+
 
 import java.io.IOException;
 import java.util.List;
@@ -38,5 +41,24 @@ public class ObjectDetectionController {
     public ResponseEntity<List<DetectedItem>> getDetectedItems() {
         List<DetectedItem> items = detectionService.getAllItems();
         return ResponseEntity.ok(items);
+    }
+
+    @PutMapping("/items/{id}")
+    public ResponseEntity<DetectedItem> updateItem(
+            @PathVariable Long id,
+            @RequestBody DetectedItemUpdateRequest request) {
+        try {
+            DetectedItem updateItem = detectionService.updateItem(id, request);
+            return ResponseEntity.ok(updateItem);
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/items/manual")
+    public ResponseEntity<DetectedItem> addItemManually(
+            @RequestBody DetectedItemCreateRequest request){
+        DetectedItem newItem = detectionService.addItemManually(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newItem);
     }
 }
