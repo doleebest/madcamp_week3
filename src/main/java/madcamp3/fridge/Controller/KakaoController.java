@@ -41,6 +41,11 @@ public class KakaoController {
                 + "?client_id=" + kakaoClientId
                 + "&redirect_uri=" + kakaoRedirectUri
                 + "&response_type=code";
+
+        // 로그 추가
+        System.out.println("Redirect URI: " + kakaoRedirectUri);
+        System.out.println("Full Auth URL: " + kakaoAuthUrl);
+
         return "redirect:" + kakaoAuthUrl;
     }
 
@@ -48,18 +53,15 @@ public class KakaoController {
     @GetMapping("/auth/kakao/callback")
     public String callback(@RequestParam String code) throws IOException {
         // 1. Access Token 요청
-        String accessToken = getAccessToken(code);
+        String accessToken = kakaoService.getKakaoAccessToken(code);
 
         // 2. 사용자 정보 가져오기
-        JsonObject userInfo = getUserInfo(accessToken);
+        JsonObject userInfo = kakaoService.getKakaoUserInfo(accessToken);
 
         // 3. 사용자 정보 저장
         userService.saveOrUpdateUser(userInfo);
 
-        // 4. Access Token 반환 (Postman에서 확인 가능)
         return "Access Token: " + accessToken + "\nUser Info: " + userInfo.toString();
-
-
     }
 
     private String getAccessToken(String code) throws IOException {
