@@ -31,6 +31,8 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	implementation 'net.nurigo:sdk:4.3.0'
 	implementation 'org.json:json:20210307'
+	implementation 'com.google.code.gson:gson:2.11.0'
+	implementation 'org.springframework.boot:spring-boot-starter-json'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
