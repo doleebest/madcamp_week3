@@ -106,12 +106,13 @@ public class ObjectDetectionService {
                 .imageUrl(item.getImageUrl())
                 .build();
 
-        return repository.save(item);
+        return repository.save(updatedItem);
     }
 
     // 아이템 수동 추가
     public DetectedItem addItemManually(String userId, DetectedItemCreateRequest request) { // 파라미터 순서도 컨트롤러랑 맞춰야 함.
         DetectedItem newItem = DetectedItem.builder()
+                .userId(userId)
                 .itemName(request.getItemName())
                 .amount(request.getAmount())
                 .unit(request.getUnit())
