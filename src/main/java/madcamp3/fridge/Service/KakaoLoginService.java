@@ -1,7 +1,9 @@
 package madcamp3.fridge.Service;
 
+import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.json.JSONObject;
 
 @Service
 @Slf4j
@@ -41,6 +42,10 @@ public class KakaoLoginService {
             body.add("code", code);
             body.add("client_secret", clientSecret);
 
+            // 로깅 추가
+            log.info("Requesting access token with code: {}", code);
+            log.info("Request body: {}", body);
+
             // HTTP 요청 보내기
             HttpEntity<MultiValueMap<String, String>> requestEntity =
                     new HttpEntity<>(body, headers);
@@ -53,6 +58,9 @@ public class KakaoLoginService {
                     String.class
             );
 
+            // 응답 로깅
+            log.info("Token response: {}", response.getBody());
+
             // 응답에서 액세스 토큰 추출
             JSONObject jsonObject = new JSONObject(response.getBody());
             return jsonObject.getString("access_token");
@@ -62,14 +70,16 @@ public class KakaoLoginService {
         }
     }
 
-    public String getKakaoUserInfo(String accessToken) {
+    public JsonObject getKakaoUserInfo(String accessToken) {
         try {
             // HTTP Header 생성
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "Bearer " + accessToken);
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
             // HTTP 요청 보내기
-            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+            HttpEntity<MultiValueMap<String, String>> requestEntity =
+                    new HttpEntity<>(null, headers);
             RestTemplate restTemplate = new RestTemplate();
 
             ResponseEntity<String> response = restTemplate.exchange(
@@ -79,9 +89,15 @@ public class KakaoLoginService {
                     String.class
             );
 
-            // 응답에서 사용자 ID 추출
-            JSONObject jsonObject = new JSONObject(response.getBody());
-            return String.valueOf(jsonObject.getLong("id"));
+            log.info("User info response: {}", response.getBody());
+
+            // 응답을 JsonObject로 변환하여 반환
+            JSONObject jsonResponse = new JSONObject(response.getBody());
+            com.google.gson.JsonObject googleJsonObject =
+                    com.google.gson.JsonParser.parseString(response.getBody())
+                            .getAsJsonObject();
+            return googleJsonObject;
+
         } catch (Exception e) {
             log.error("Error getting Kakao user info: ", e);
             throw new RuntimeException("Failed to get Kakao user info");

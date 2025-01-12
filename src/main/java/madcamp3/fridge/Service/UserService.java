@@ -10,29 +10,27 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     private final UserRepository userRepository;
 
     @Transactional
     public void saveOrUpdateUser(JsonObject userInfo) {
-        String kakaoId = userInfo.get("id").getAsString();
-        String nickname = userInfo.getAsJsonObject("properties").get("nickname").getAsString();
-        String profileImage = userInfo.getAsJsonObject("properties").get("profile_image").getAsString();
-        String email = userInfo.getAsJsonObject("kakao_account").get("email").getAsString();
+        String kakaoId = String.valueOf(userInfo.get("id").getAsLong());
+        JsonObject properties = userInfo.getAsJsonObject("properties");
 
-        // 기존 사용자 조회
+        String nickname = properties.has("nickname") ?
+                properties.get("nickname").getAsString() : "Unknown";
+        String profileImage = properties.has("profile_image") ?
+                properties.get("profile_image").getAsString() : null;
+
         User user = userRepository.findByKakaoId(kakaoId)
-                .orElse(User.builder()
+                .map(existingUser -> existingUser.update(nickname, profileImage))
+                .orElseGet(() -> User.builder()
                         .kakaoId(kakaoId)
                         .nickname(nickname)
                         .profileImage(profileImage)
-                        .email(email)
                         .build());
 
-        // 업데이트: 새 정보를 적용
-        User updatedUser = user.update(nickname, profileImage, email);
-
-        // 저장
-        userRepository.save(updatedUser);
+        userRepository.save(user);
     }
 }
+
