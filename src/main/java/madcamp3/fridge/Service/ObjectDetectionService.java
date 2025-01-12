@@ -33,7 +33,7 @@ public class ObjectDetectionService {
         this.repository = repository;
     }
 
-    public List<DetectedItem> detectAndSaveItems(MultipartFile image) throws IOException {
+    public List<DetectedItem> detectAndSaveItems(MultipartFile image, String userId) throws IOException {
         // 이미지를 바이트 배열로 변환
         byte[] imageBytes = image.getBytes();
 
@@ -63,6 +63,7 @@ public class ObjectDetectionService {
         if (response.getBody() != null) {
             for (DetectionResult result : response.getBody()) {
                 DetectedItem item = DetectedItem.builder()
+                        .userId(userId)
                         .itemName(result.getLabel())
                         .confidence(result.getConfidence())
                         .detectedAt(LocalDateTime.now())
@@ -84,9 +85,14 @@ public class ObjectDetectionService {
     }
 
     // detect 된 아이템 정보 수정
-    public DetectedItem updateItem(Long id, DetectedItemUpdateRequest request){
+    public DetectedItem updateItem(Long id, String userId, DetectedItemUpdateRequest request){
         DetectedItem item = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Item not found with id: " + id));
+
+        // 본인 것만 수정 가능하도록 체크
+        if (!item.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("Not authorized to update this item");
+        }
 
         // Builder 패턴을 사용하여 업데이트
         DetectedItem updatedItem = DetectedItem.builder()
@@ -104,7 +110,7 @@ public class ObjectDetectionService {
     }
 
     // 아이템 수동 추가
-    public DetectedItem addItemManually(DetectedItemCreateRequest request) {
+    public DetectedItem addItemManually(String userId, DetectedItemCreateRequest request) { // 파라미터 순서도 컨트롤러랑 맞춰야 함.
         DetectedItem newItem = DetectedItem.builder()
                 .itemName(request.getItemName())
                 .amount(request.getAmount())
@@ -115,6 +121,23 @@ public class ObjectDetectionService {
                 .build();
 
         return repository.save(newItem);
+    }
+
+    public List<DetectedItem> getItemsByUserId(String userId) {
+        return repository.findByUserId(userId);
+    }
+
+    // 물체 삭제 (본인 것만 삭제 가능)
+    public void deleteItem(Long itemId, String userId) {
+        DetectedItem item = repository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+
+        // 본인 것만 삭제 가능하도록 체크
+        if (!item.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("Not authorized to delete this item");
+        }
+
+        repository.delete(item);
     }
 }
 

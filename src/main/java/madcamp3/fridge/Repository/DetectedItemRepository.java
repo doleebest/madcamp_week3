@@ -1,14 +1,14 @@
 package madcamp3.fridge.Repository;
 
 import madcamp3.fridge.Domain.DetectedItem;
-import madcamp3.fridge.Domain.Fridge;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Repository
 public interface DetectedItemRepository extends JpaRepository<DetectedItem, Long> {
     List<DetectedItem> findByDetectedAtBetween(LocalDateTime start, LocalDateTime end);
-    List<DetectedItem> findByFridge(Fridge fridge);
-    List<DetectedItem> findByFridgeUserId(String userId);
+    List<DetectedItem> findByUserId(String userId);
 }

@@ -15,6 +15,7 @@ public class DetectedItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String userId;      // 카카오 로그인을 위해 추가
     private String itemName;
     private Double confidence;
     private LocalDateTime detectedAt;
@@ -25,14 +26,11 @@ public class DetectedItem {
     private Double amount;    // 양
     private String unit;      // 단위 (g, kg, ml, L, 개, 개입, 매, 팩 등)
 
-    @ManyToOne
-    @JoinColumn(name = "frdige_id")
-    private Fridge fridge;
-
     @Builder
     public DetectedItem(
             Long id,
             String itemName,
+            String userId,
             Double confidence,
             LocalDateTime detectedAt,
             String imageUrl,
@@ -41,6 +39,7 @@ public class DetectedItem {
             String unit
     ) {
         this.id = id;
+        this.userId = userId;   // 추가
         this.itemName = itemName;
         this.confidence = confidence;
         this.detectedAt = detectedAt;
