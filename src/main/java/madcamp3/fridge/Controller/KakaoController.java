@@ -3,6 +3,7 @@ package madcamp3.fridge.Controller;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import madcamp3.fridge.Service.KakaoLoginService;
 import madcamp3.fridge.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Controller
+@Slf4j
 // @RequiredArgsConstructor
 public class KakaoController {
 
@@ -34,6 +38,9 @@ public class KakaoController {
     @Value("${kakao.redirect.uri}")
     private String kakaoRedirectUri;
 
+    @Value("${kakao.client.secret}")
+    private String kakaoClientSecret;
+
     // Authorization Code 요청
     @GetMapping("/auth/kakao/login")
     public String login() {
@@ -42,9 +49,9 @@ public class KakaoController {
                 + "&redirect_uri=" + kakaoRedirectUri
                 + "&response_type=code";
 
-        // 로그 추가
-        System.out.println("Redirect URI: " + kakaoRedirectUri);
-        System.out.println("Full Auth URL: " + kakaoAuthUrl);
+        log.info("KakaoClientId: " + kakaoClientId);
+        log.info("RedirectUri: " + kakaoRedirectUri);
+        log.info("Full Auth URL: " + kakaoAuthUrl);
 
         return "redirect:" + kakaoAuthUrl;
     }
@@ -52,16 +59,16 @@ public class KakaoController {
     // Callback: Access Token 요청
     @GetMapping("/auth/kakao/callback")
     public String callback(@RequestParam String code) throws IOException {
-        // 1. Access Token 요청
-        String accessToken = kakaoService.getKakaoAccessToken(code);
-
-        // 2. 사용자 정보 가져오기
-        JsonObject userInfo = kakaoService.getKakaoUserInfo(accessToken);
-
-        // 3. 사용자 정보 저장
-        userService.saveOrUpdateUser(userInfo);
-
-        return "Access Token: " + accessToken + "\nUser Info: " + userInfo.toString();
+        try {
+            // KakaoLoginService의 메서드 사용
+            String accessToken = kakaoService.getKakaoAccessToken(code);
+            JsonObject userInfo = kakaoService.getKakaoUserInfo(accessToken);
+            userService.saveOrUpdateUser(userInfo);
+            return "로그인 성공! Access Token: " + accessToken + "\nUser Info: " + userInfo;
+        } catch (Exception e) {
+            log.error("Error in callback: ", e);
+            return "로그인 실패: " + e.getMessage();
+        }
     }
 
     private String getAccessToken(String code) throws IOException {
@@ -69,27 +76,43 @@ public class KakaoController {
         URL url = new URL(tokenUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
         connection.setDoOutput(true);
 
-        String body = "grant_type=authorization_code"
-                + "&client_id=" + kakaoClientId
-                + "&redirect_uri=" + kakaoRedirectUri
-                + "&code=" + code;
+        String encodedRedirectUri = URLEncoder.encode(kakaoRedirectUri, StandardCharsets.UTF_8.toString());
+
+        String body = String.format("grant_type=authorization_code&client_id=%s&redirect_uri=%s&code=%s&client_secret=%s",
+                kakaoClientId,
+                encodedRedirectUri,
+                code,
+                kakaoClientSecret);  // client_secret 추가
+
+        log.info("Token request body: " + body);
 
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()))) {
             bw.write(body);
             bw.flush();
         }
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder sb = new StringBuilder();
-        String line;
+        int responseCode = connection.getResponseCode();
+        log.info("Token response code: " + responseCode);  // 디버깅용 로그
 
-        while ((line = br.readLine()) != null) {
-            sb.append(line);
+        if (responseCode == 401) {
+            log.error("Authorization failed - check client_id and redirect_uri");
+            throw new IOException("Authorization failed");
         }
 
-        JsonObject jsonObject = JsonParser.parseString(sb.toString()).getAsJsonObject();
+        StringBuilder response = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                response.append(line);
+            }
+        }
+
+        log.info("Token response: " + response.toString());  // 디버깅용 로그
+
+        JsonObject jsonObject = JsonParser.parseString(response.toString()).getAsJsonObject();
         return jsonObject.get("access_token").getAsString();
     }
 
