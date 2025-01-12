@@ -10,7 +10,4 @@ public class User {
 
     private String kakaoId; // 카카오 고유 ID
     private String username; // 사용자 이름
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Fridge fridge;
 }
