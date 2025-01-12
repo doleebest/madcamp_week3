@@ -8,6 +8,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String kakaoId; // 카카오 고유 ID
-    private String username; // 사용자 이름
+
+    private String email;
+    private String nickname;
+    private String profileImage;
 }
