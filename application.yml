@@ -9,3 +9,10 @@ spring: #띄어쓰기 없음
       ddl-auto: update #띄어쓰기 6칸
     generate-ddl: true #띄어쓰기 4칸
     show-sql: true #띄어쓰기 4칸
+
+kakao:
+  client:
+    id: 4f4b14bd6436ac2e7dd840213fbc7360
+    secret: ohNLypzUYjRUpBy2x4dyCtsSN7Pn2rcB  # 카카오 개발자 콘솔에서 확인
+  redirect:
+    uri: http://localhost:8080/api/oauth/kakao/callback

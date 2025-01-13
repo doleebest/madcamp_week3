@@ -1,32 +1,32 @@
 package madcamp3.fridge.Domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+import java.time.LocalDateTime;
+
 @Entity
+@Table(name = "users")
+@Getter @Setter
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String kakaoId;
+    @Column(nullable = false, unique = true)
+    private Long kakaoId;
+
+    @Column(nullable = false)
     private String nickname;
+
     private String profileImage;
 
-    // User 업데이트 메서드
-    public User update(String nickname, String profileImage) {
-        this.nickname = nickname;
-        this.profileImage = profileImage;
-        return this;  // 새 객체를 만들지 않고 현재 객체를 수정
-    }
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }
