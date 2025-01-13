@@ -1,18 +1,49 @@
-spring: #띄어쓰기 없음
-  datasource: #띄어쓰기 2칸
-    driver-class-name: com.mysql.cj.jdbc.Driver #띄어쓰기 4칸
-    url: jdbc:mysql://localhost:3306/fridge?createDatabaseIfNotExist=true&characterEncoding=UTF-8&characterSetResults=UTF-8 #띄어쓰기 4칸
-    username: root #띄어쓰기 4칸
-    password: sojeong0@ #띄어쓰기 4칸
-  jpa: #띄어쓰기 2칸
-    hibernate: #띄어쓰기 4칸
-      ddl-auto: update #띄어쓰기 6칸
-    generate-ddl: true #띄어쓰기 4칸
-    show-sql: true #띄어쓰기 4칸
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/fridge?createDatabaseIfNotExist=true&characterEncoding=UTF-8&characterSetResults=UTF-8
+    username: root
+    password: sojeong0@
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.MySQL8Dialect
+      format_sql: true
+      ddl-auto: update
+      show_sql: true
+      use_sql_comments: true
+      jdbc:
+        time_zone: UTC
+    generate-ddl: true
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+            scope:
+              - email
+              - profile
+            authorization-grant-type: authorization_code
+            client-name: Google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
+            user-name-attribute: email
 
-kakao:
-  client:
-    id: 4f4b14bd6436ac2e7dd840213fbc7360
-    secret: ohNLypzUYjRUpBy2x4dyCtsSN7Pn2rcB  # 카카오 개발자 콘솔에서 확인
-  redirect:
-    uri: http://localhost:8080/api/oauth/kakao/callback
+# 추가적인 설정들
+spring.thymeleaf.cache: false
+spring.mvc.view.prefix: /templates/
+spring.mvc.view.suffix: .html
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+
+# 세션 관련 설정
+server.servlet.session.cookie.name: myappSession
+server.servlet.session.cookie.secure: false # 개발 환경에서는 false로 설정, 운영 환경에서는 true로 설정
