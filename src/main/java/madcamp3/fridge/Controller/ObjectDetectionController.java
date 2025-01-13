@@ -28,10 +28,11 @@ public class ObjectDetectionController {
 
     // 물체 인식 및 저장
     @PostMapping("/detect")
-    public ResponseEntity<List<DetectedItem>> detectItems(@RequestParam("image") MultipartFile image,
-                                                          @RequestParam("userId") String userId) {
+    public ResponseEntity<List<DetectedItem>> detectItems(
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("userEmail") String userEmail) {  // userId -> userEmail
         try {
-            List<DetectedItem> detectedItems = detectionService.detectAndSaveItems(image, userId);
+            List<DetectedItem> detectedItems = detectionService.detectAndSaveItems(image, userEmail);
             return ResponseEntity.ok(detectedItems);
         } catch (IOException e) {
             log.error("Error processing image: ", e);
@@ -41,8 +42,8 @@ public class ObjectDetectionController {
 
     // 특정 사용자의 물체 목록 조회
     @GetMapping("/items")
-    public ResponseEntity<List<DetectedItem>> getDetectedItems(@RequestParam ("userId") String userId) {
-        List<DetectedItem> items = detectionService.getItemsByUserId(userId);
+    public ResponseEntity<List<DetectedItem>> getDetectedItems(@RequestParam("userEmail") String userEmail) {  // userId -> userEmail
+        List<DetectedItem> items = detectionService.getItemsByUserId(userEmail);
         return ResponseEntity.ok(items);
     }
 
@@ -50,12 +51,12 @@ public class ObjectDetectionController {
     @PutMapping("/items/{id}")
     public ResponseEntity<DetectedItem> updateItem(
             @PathVariable Long id,
-            @RequestParam("userId") String userId,
+            @RequestParam("userEmail") String userEmail,  // userId -> userEmail
             @RequestBody DetectedItemUpdateRequest request) {
         try {
-            DetectedItem updateItem = detectionService.updateItem(id, userId, request);
+            DetectedItem updateItem = detectionService.updateItem(id, userEmail, request);
             return ResponseEntity.ok(updateItem);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -63,19 +64,18 @@ public class ObjectDetectionController {
     // 수동으로 물체 추가
     @PostMapping("/items/manual")
     public ResponseEntity<DetectedItem> addItemManually(
-            @RequestParam("userId") String userId,
-            @RequestBody DetectedItemCreateRequest request){
-        DetectedItem newItem = detectionService.addItemManually(userId, request);
+            @RequestParam("userEmail") String userEmail,  // userId -> userEmail
+            @RequestBody DetectedItemCreateRequest request) {
+        DetectedItem newItem = detectionService.addItemManually(userEmail, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(newItem);
     }
 
     // 물체 삭제
-    @DeleteMapping("/'items/{itemId}")
+    @DeleteMapping("/items/{itemId}")  // 따옴표 제거
     public ResponseEntity<Void> deleteItem(
             @PathVariable Long itemId,
-            @RequestParam("userId") String userId){
-        detectionService.deleteItem(itemId, userId);
+            @RequestParam("userEmail") String userEmail) {  // userId -> userEmail
+        detectionService.deleteItem(itemId, userEmail);
         return ResponseEntity.noContent().build();
     }
-
 }

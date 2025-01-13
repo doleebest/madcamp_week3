@@ -17,10 +17,10 @@ public class DetectedItem {
     private Long id;
 
     private String itemName;
-    private Double confidence;
+    // private Double confidence;
     private LocalDateTime detectedAt;
     private String imageUrl;
-    private LocalDateTime expirationAt;
+    // private LocalDateTime expirationAt;
 
     private Double amount;    // 양
     private String unit;      // 단위 (g, kg, ml, L, 개, 개입, 매, 팩 등)

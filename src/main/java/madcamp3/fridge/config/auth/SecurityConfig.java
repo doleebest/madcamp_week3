@@ -47,16 +47,19 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 적용
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/board/**","/pet/**", "/chat/**","/api/**").authenticated()  // 모든 API는 로그인 인증 필요
-                        .requestMatchers("/", "/login/**", "/oauth2/**").permitAll() // 인증 없이 접근 가능한 경로 : 로그인 페이지
+                        .requestMatchers("/", "/login/**", "/oauth2/**").permitAll()  // 로그인 관련 경로는 모두에게 허용
+                        .requestMatchers("/api/**").authenticated()  // API는 인증 필요
                         .anyRequest().authenticated() // 나머지 경로는 인증이 필요
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login")  // 로그인 페이지 경로 추가
+                        .loginPage("/oauth2/authorization/google")  // Google OAuth 로그인 페이지로 직접 리다이렉트
                         // .defaultSuccessUrl("/loginSuccess")  // 로그인 성공 시 리다이렉트 경로
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)) // 커스텀 OAuth2 서비스 사용
                         .successHandler(((request, response, authentication) -> {
                             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                            // 세션 ID 로깅
+                            System.out.println("Session ID: " + request.getSession().getId());
 
                             // 세션 설정
                             request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
