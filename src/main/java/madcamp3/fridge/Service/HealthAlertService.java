@@ -18,18 +18,20 @@ public class HealthAlertService {
     private final UserPhoneNumberRepository userPhoneNumberRepository;
 
     @Transactional
-    public void checkHealthScoreAndAlert(String userId) {
-        HealthScoreResponse healthScore = nutritionService.calculateOverallHealthScore();
+    public HealthScoreResponse checkHealthScoreAndAlert(String userEmail) {
+        HealthScoreResponse healthScore = nutritionService.calculateOverallHealthScore(userEmail);
 
         if (healthScore.getHealthScore() <= 60.0) {
-            UserPhoneNumber userPhone = userPhoneNumberRepository.findByUserId(userId)
+            UserPhoneNumber userPhone = userPhoneNumberRepository.findByUserEmail(userEmail)
                     .orElseThrow(() -> new RuntimeException("등록된 전화번호가 없습니다."));
 
             String messageContent = createAlertMessage(healthScore);
             smsService.sendHealthAlert(userPhone.getParentsPhone(), messageContent);
 
-            log.info("Health alert sent for user: {}. Score: {}", userId, healthScore.getHealthScore());
+            log.info("Health alert sent for user: {}. Score: {}", userEmail, healthScore.getHealthScore());
         }
+
+        return healthScore;  // HealthScoreResponse 반환
     }
 
     private String createAlertMessage(HealthScoreResponse healthScore) {

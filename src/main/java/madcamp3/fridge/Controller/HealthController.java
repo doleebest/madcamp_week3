@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.*;
 public class HealthController {
     private final HealthAlertService healthAlertService;
 
-    @GetMapping("/check/{userId}")
-    public ResponseEntity<String> checkHealthScore(@PathVariable String userId) {
+    @GetMapping("/check")
+    public ResponseEntity<HealthScoreResponse> checkHealthScore(@RequestParam String userEmail) {
         try {
-            healthAlertService.checkHealthScoreAndAlert(userId);
-            return ResponseEntity.ok("건강도 체크 완료");
+            HealthScoreResponse response = healthAlertService.checkHealthScoreAndAlert(userEmail);
+            return ResponseEntity.ok(response);  // HealthScoreResponse 객체를 직접 반환
         } catch (Exception e) {
             log.error("Error checking health score: ", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(null);
         }
     }
 }

@@ -21,8 +21,10 @@ public class EdamamNutritionService {
     private final RestTemplate restTemplate;
     private final DetectedItemRepository itemRepository;
 
-    public HealthScoreResponse calculateOverallHealthScore() {
-        List<DetectedItem> items = itemRepository.findAll();
+    public HealthScoreResponse calculateOverallHealthScore(String userEmail) {
+        // User 엔티티의 email로 DetectedItem을 조회
+        List<DetectedItem> items = itemRepository.findByUser_Email(userEmail);
+
         if (items.isEmpty()) {
             return new HealthScoreResponse(0.0,
                     Collections.singletonList("냉장고가 비어있습니다."),
