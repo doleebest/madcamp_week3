@@ -11,5 +11,6 @@ import java.util.List;
 public interface DetectedItemRepository extends JpaRepository<DetectedItem, Long> {
     List<DetectedItem> findByDetectedAtBetween(LocalDateTime start, LocalDateTime end);
 
-    List<DetectedItem> findByUser_Id(String userId);
+    List<DetectedItem> findByUser_Email(String email);
+    List<DetectedItem> findByUser_Id(String userId);  // 이 메소드 추가
 }

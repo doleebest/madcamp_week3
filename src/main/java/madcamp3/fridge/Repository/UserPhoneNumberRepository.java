@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserPhoneNumberRepository extends JpaRepository<UserPhoneNumber, Long> {
-    Optional<UserPhoneNumber> findByUserId(String userId);
+public interface UserPhoneNumberRepository extends JpaRepository<UserPhoneNumber, String> {
+    Optional<UserPhoneNumber> findByUserEmail(String userEmail);
 }

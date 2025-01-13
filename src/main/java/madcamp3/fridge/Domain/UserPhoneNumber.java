@@ -15,12 +15,12 @@ public class UserPhoneNumber {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userId;  // 카카오 사용자 ID
+    private String userEmail;  // 카카오 사용자 ID
     private String parentsPhone;  // 엄마 전화번호
 
     @Builder
-    public UserPhoneNumber(String userId, String motherPhone) {
-        this.userId = userId;
+    public UserPhoneNumber(String userEmail, String motherPhone) {
+        this.userEmail = userEmail;
         this.parentsPhone = motherPhone;
     }
 }
