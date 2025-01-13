@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-public class CustomOAuth2User DefaultOAuth2User {
+public class CustomOAuth2User extends DefaultOAuth2User {
     private String email;
 
     public CustomOAuth2User(Collection<? extends GrantedAuthority> authorities,

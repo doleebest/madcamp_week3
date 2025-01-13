@@ -1,4 +1,4 @@
-package madcamp3.fridge.config.auth;
+package madcamp3.fridge.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

@@ -1,5 +1,6 @@
 package madcamp3.fridge.Domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,16 +16,19 @@ public class DetectedItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userId;      // 카카오 로그인을 위해 추가
     private String itemName;
     private Double confidence;
     private LocalDateTime detectedAt;
     private String imageUrl;
     private LocalDateTime expirationAt;
 
-    // 추가된 필드
     private Double amount;    // 양
     private String unit;      // 단위 (g, kg, ml, L, 개, 개입, 매, 팩 등)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonBackReference
+    private User user;
 
     @Builder
     public DetectedItem(
@@ -36,10 +40,10 @@ public class DetectedItem {
             String imageUrl,
             LocalDateTime expirationAt,
             Double amount,
-            String unit
+            String unit,
+            User user
     ) {
         this.id = id;
-        this.userId = userId;   // 추가
         this.itemName = itemName;
         this.confidence = confidence;
         this.detectedAt = detectedAt;
@@ -47,6 +51,7 @@ public class DetectedItem {
         this.expirationAt = expirationAt;
         this.amount = amount;
         this.unit = unit;
+        this.user = user;
     }
 
     // 수량 업데이트를 위한 메서드
