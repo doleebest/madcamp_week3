@@ -1,5 +1,6 @@
 package madcamp3.fridge.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import madcamp3.fridge.Domain.User;
 import madcamp3.fridge.Dto.KakaoUserInfo;
 import madcamp3.fridge.Repository.UserRepository;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KakaoService {
     private final UserRepository userRepository;
 
@@ -28,6 +30,7 @@ public class KakaoService {
     private String clientSecret;
 
     public KakaoUserInfo getKakaoUserInfo(String accessToken) {
+        log.error("getKakaoUserInfo start");
         try {
             // 카카오 API 호출
             String userInfoUri = "https://kapi.kakao.com/v2/user/me";
