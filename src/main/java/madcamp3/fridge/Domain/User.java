@@ -1,32 +1,50 @@
 package madcamp3.fridge.Domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
-@Getter @Setter
-@NoArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    // @GeneratedValue(strategy = GenerationType.IDENTITY) // 얘는 String과 함께 사용할 수 없음
+    private String id;
 
-    @Column(nullable = false, unique = true)
-    private Long kakaoId;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<DetectedItem> detectedItems = new ArrayList<>();
 
     @Column(nullable = false)
-    private String nickname;
+    private String name;
 
-    private String profileImage;
+    @Column(nullable = false)
+    private String email;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+    @Column(nullable = false)
+    private String picture;
+
+    @Builder
+    public User(String id, String name, String email, Role role, String picture) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.role = role;
+        this.picture = picture;
+    }
+
+    public User update(String name, String picture) {
+        this.name = name;
+        this.picture = picture;
+        return this;
+    }
 }

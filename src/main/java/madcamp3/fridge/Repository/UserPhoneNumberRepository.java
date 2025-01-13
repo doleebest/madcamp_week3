@@ -1,6 +1,5 @@
 package madcamp3.fridge.Repository;
 
-import madcamp3.fridge.Domain.User;
 import madcamp3.fridge.Domain.UserPhoneNumber;
 import org.springframework.data.jpa.repository.JpaRepository;
 
