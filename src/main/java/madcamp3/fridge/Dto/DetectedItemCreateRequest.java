@@ -13,5 +13,5 @@ public class DetectedItemCreateRequest {
     private String itemName;
     private Double amount;
     private String unit;
-    private LocalDateTime expirationAt;
+    // private LocalDateTime expirationAt;
 }
