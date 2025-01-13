@@ -47,4 +47,5 @@ public class User {
         this.picture = picture;
         return this;
     }
+
 }

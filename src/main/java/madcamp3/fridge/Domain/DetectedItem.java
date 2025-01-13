@@ -35,20 +35,20 @@ public class DetectedItem {
             Long id,
             String itemName,
             String userId,
-            Double confidence,
+            // Double confidence,
             LocalDateTime detectedAt,
             String imageUrl,
-            LocalDateTime expirationAt,
+            // LocalDateTime expirationAt,
             Double amount,
             String unit,
             User user
     ) {
         this.id = id;
         this.itemName = itemName;
-        this.confidence = confidence;
+        // this.confidence = confidence;
         this.detectedAt = detectedAt;
         this.imageUrl = imageUrl;
-        this.expirationAt = expirationAt;
+        // this.expirationAt = expirationAt;
         this.amount = amount;
         this.unit = unit;
         this.user = user;
@@ -58,5 +58,9 @@ public class DetectedItem {
     public void updateQuantity(Double amount, String unit) {
         this.amount = amount;
         this.unit = unit;
+    }
+
+    public String getUserId() {
+        return user != null ? user.getId() : null;
     }
 }
