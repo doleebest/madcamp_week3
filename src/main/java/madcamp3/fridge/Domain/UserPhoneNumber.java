@@ -23,4 +23,8 @@ public class UserPhoneNumber {
         this.userEmail = userEmail;
         this.parentsPhone = motherPhone;
     }
+
+    public void updateParentsPhone(String parentsPhone) {
+        this.parentsPhone = parentsPhone;
+    }
 }
