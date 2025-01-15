@@ -23,16 +23,15 @@ import java.util.Arrays;
 public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
-
-    //CORS 설정 추가
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // react app의 Local url
+        // 안드로이드 앱에서의 요청을 허용
+        configuration.setAllowedOriginPatterns(Arrays.asList("*")); // 모든 출처 허용
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true); // 인증 정보를 쿠키와 함께 보내도록 허용
+        configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -40,30 +39,23 @@ public class SecurityConfig {
         return source;
     }
 
-    // 보안 설정
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 적용
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login/**", "/oauth2/**", "/api/**").permitAll()  // 로그인 관련 경로는 모두에게 허용
-                        //.requestMatchers("/api/**").authenticated()  // API는 인증 필요
-                        .anyRequest().authenticated() // 나머지 경로는 인증이 필요
+                        .requestMatchers("/", "/login/**", "/oauth2/**", "/api/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/oauth2/authorization/google")  // Google OAuth 로그인 페이지로 직접 리다이렉트
-                        // .defaultSuccessUrl("/loginSuccess")  // 로그인 성공 시 리다이렉트 경로
-                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)) // 커스텀 OAuth2 서비스 사용
+                        .loginPage("/oauth2/authorization/google")
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(((request, response, authentication) -> {
                             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                            // 세션 ID 로깅
                             System.out.println("Session ID: " + request.getSession().getId());
-
-                            // 세션 설정
-                            request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-                            response.sendRedirect("http://localhost:3000/dashboard");
+                            String userId = authentication.getName();
+                            response.sendRedirect("myapp://auth/success?user=" + userId);
                         }))
                 )
                 .logout(logout -> logout
@@ -73,7 +65,7 @@ public class SecurityConfig {
                         .permitAll()
                         .logoutSuccessHandler((request, response, authentication) -> {
                             response.setStatus(HttpStatus.OK.value());
-                            response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+                            response.setHeader("Access-Control-Allow-Origin", "*");
                             response.setHeader("Access-Control-Allow-Credentials", "true");
                             response.getWriter().write("Logout successful");
                             response.getWriter().flush();
@@ -83,7 +75,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 로그인 성공 핸들러
     @Bean
     public AuthenticationSuccessHandler successHandler() {
         return ((request, response, authentication) -> {
