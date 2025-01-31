@@ -1,6 +1,6 @@
 # 🍅 냉장고를 부탁해
 <div align="center">
-<h2> 냉장고를 부탁해! 는 자취생을 위한 냉장고 및 식단 관리 앱입니다 🍎🍊🍖🥦🍴 </h2>
+<h2> 냉장고를 부탁해! 는 자취생을 위한 AI 냉장고 및 식단 관리 앱입니다 🍎🍊🍖🥦🍴 </h2>
 <p>
 자취생들은 아무래도 냉장고에 음식들이 많으면 (특히 부모님이 가져다 주신 음식) 관리하기가 힘들고 또 균형잡힌 식사를 챙겨 먹기가 힘듭니다.
 ➡️ 그래서 자취생들이 냉장고의 식재료를 잘 관리하고, 그 식재료로 균형잡힌 식사를 해먹을 수 있도록 도와주며,
@@ -58,54 +58,90 @@
 
 ## 🛠 주요 기능
 
- <table>
+<style>
+  .grid-2x2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .grid-1x2 {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+</style>
+
+<table>
     <tr>
-      <td align="center">메인화면</td>
-      <td align="center">기록하기</td>
+        <td align="center">메인화면</td>
+        <td align="center">기록하기</td>
     </tr>
     <tr>
-      <td align="center"><img src="https://github.com/user-attachments/assets/ba7da632-293e-4e7c-9d56-7cb29ce4b7a9" width="500" /></td>
-      <td align="center"><img src="https://github.com/user-attachments/assets/537cb8b4-d423-42f5-9c2d-c80ca9f441c7" width="500"/></td>
+        <td align="center" class="grid-1x2">
+            <img src="https://github.com/user-attachments/assets/27ebe94b-d610-48b0-bc13-71472dfb106b" width="500" />
+            <img src="https://github.com/user-attachments/assets/2a8ff57d-e2df-492a-b53f-58dbdeed20ea" width="500" />
+        </td>
+        <td align="center" class="grid-2x2">
+            <img src="https://github.com/user-attachments/assets/ae9d7c7c-c6c5-48fd-9b33-25158a918742" width="500" />
+            <img src="https://github.com/user-attachments/assets/52144df8-aa51-4e17-9203-955652c63604" width="500" />
+            <img src="https://github.com/user-attachments/assets/0d3c1d36-2926-4ef6-9464-e9674c6bbcd2" width="500" />
+            <img src="https://github.com/user-attachments/assets/670e313d-b9c5-4d8a-8b42-634790cde808" width="500" />
+        </td>
     </tr>
     <tr>
-      <td align="center">추억하기</td>
-      <td align="center">대화하기</td>
+        <td align="center">추억하기</td>
+        <td align="center">대화하기</td>
     </tr>
     <tr>
-      <td align="center"><img src="https://github.com/user-attachments/assets/4a63e1f7-07b2-48fa-83e4-723fa8eea15e" width="500" /></td>
-      <td align="center"><img src="https://github.com/user-attachments/assets/6aea33d2-2c1d-4b01-8b7d-ba03e9d9fab3" width="500" /></td>
+        <td align="center">
+            <img src="https://github.com/user-attachments/assets/84c49ce6-1fd7-430d-a61a-18fbbfe7719a" width="500" />
+        </td>
+        <td align="center" class="grid-2x2">
+            <img src="https://github.com/user-attachments/assets/24b3926f-9f8a-4948-9bce-01815fe691f4" width="500" />
+            <img src="https://github.com/user-attachments/assets/dd786376-62b2-4304-b752-1c5f8a72a658" width="500" />
+            <img src="https://github.com/user-attachments/assets/30cef6a1-0f9a-4f10-8ae1-4c148c99f668" width="500" />
+            <img src="https://github.com/user-attachments/assets/8882b990-6a28-431a-8f94-aad6f87a6963" width="500" />
+        </td>
     </tr>
- </table>
+</table>
+
+
 
 
 <br>
 
 ### 메인화면 및 구글 소셜 로그인 기능
-- 웹을 처음 실행하면 화면이 표시됩니다. (`tailwind`로 구름이 둥둥 떠다녀요~ ☁️)
-- 그리고 로그인하기 혹은 구글 계정으로 시작하기를 누르면 구글 소셜 로그인 페이지로 redirect 됩니다.
-- - login을 하면 `mysql database`에 회원 데이터가 삽입됩니다.
-- 상단 네비게이션 바를 누르면 구글 회원 데이터를 불러옵니다.  
-<img width="443" alt="Image" src="https://github.com/user-attachments/assets/7408982b-8ef4-4c7c-8321-8c9f9769b13f" /><br>
-- 물론 로그아웃도 가능합니다! (다시 처음 화면으로 돌아갑니다.) <br>
+- 웹을 처음 실행하면 냉장고가 열리는 화면이 표시됩니다.
+- 그리고 로그인하기 혹은 구글 계정으로 시작하기를 누르면 구글 소셜 로그인 페이지로 redirect 됩니다
+- login을 하면 `firebase database`에 회원 데이터가 삽입됩니다.
+- “냉장고 살펴보기”를 누르면 구글 회원 데이터를 불러옵니다.
+    - 이름, 이메일, 프로필 사진
+- 물론 로그아웃과 회원 탈퇴도 가능합니다! (다시 처음 화면으로 돌아갑니다.)<br>
 
-### 기록하기
+### 냉장고 채우기
 
-- 반려동물의 정보를 기록할 수 있는 탭입니다. 최대한 정보를 자세하게 입력하는 것이 좋습니다. 내 반려 동물의 성격, 장점, 단점, 특징, 행복했던 추억, 사고쳤던 기억 등을 기록을 하면서 내가 기르던 반려동물에 대해 상기해보는 효과도 있습니다. 🌿
-- 수정하고 싶은 마음이 들어 ‘이전으로’를 눌러 돌아가면 해당 데이터들이 남아 있고, 그리고 입력하지 않은 채로 ‘다음으로’를 누르면 경고문이 뜹니다.
+- 영수증을 찍으면, gemini가 냉장고에 넣을 만한 식품들을 알아서 인식해 식품 목록에 업데이트를 해줍니다.
+- 이때 가공식품과 신선식품의 사진이 다르게 입력됩니다.
+- 또한 장을 봐온 물건들을 카메라로 찍으면, google vision api가 이미지 인식, 혹은 텍스트 인식으로 식품 목록에 업데이트를 해줍니다.
+- 만약 인식이 안된 물건이 있다면, 수동으로 물건을 추가할 수도 있
 
-### 추억하기
+### 정보 입력하기
 
-- 반려 동물과의 추억을 사진으로 올릴 수 있는 페이지입니다. 사진과 함께 제목, 내용을 입력하면 업로드가 됩니다.  
-<img width="500" alt="Image" src="https://github.com/user-attachments/assets/d217b8af-2794-4fa7-8967-2bb1d6b2d12c" /><br>
-- 그리고 갤러리 기능을 추가하여`masonry view`로 반려동물과의 추억을 모아볼 수 있게 uxui를 구성했습니다. 스크롤도 가능합니다.
+- 여러분의 식사를 걱정해주는 누군가 (ex. 부모님, 연인 등)의 연락처를 적어둡니다.
+- 왜 적는지는 다음 섹션에서 설명드리겠습니다.
 
-### 대화하기
-- 내가 추가했던 동물들의 목록이 나오고 그 중에서 동물을 선택하여 대화를 나눌 수 있습니다. <br>
-<img width="763" alt="Image" src="https://github.com/user-attachments/assets/765b70d0-7b6d-4e29-bca0-fc7bd0555179" width="500"/><br>
-- 이때, `ChatGPT API`를 따왔는데, 이전에 사용자가 “기록하기”에서 입력했던 정보들과 대화 히스토리들이 모두 ChatGPT에 프롬프트로 들어가게 됩니다. 사용자는 세상을 떠난 반려동물이 된 ChatGPT와 대화를 나누며 반려동물이 언제나 곁에 있는 기분을 느낄 수 있습니다 ✨ `(프롬프트 엔지니어링)`
-- 더불어, 추억하기 탭에서 사진과 함께 올렸던 content도 ChatGPT에 적용이 됩니다.
-- 그리고 이 목록에서 반려동물 정보를 삭제하거나, 수정할 수 있습니다. 목록에서 반려동물을 누르면 “기록하기”탭으로 돌아가서 정보를 수정할 수 있습니다. 예를들어 새로운 추억이 더 생각났다면 기록할 수 있겠죠?
-- 대화 히스토리는 저장되어 언제든 다시 들어가서 대화를 나누고 싶을 때마다 다시 대화를 시작할 수 있습니다.
+### 냉장고 살펴보기
+- 내 냉장고의 식재료를 Edamam api가 분석해, 점수를 매겨줍니다.
+    - 예를들어, 채소 및 단백질류가 많으면 점수가 올라가고 가공식품(캔, 과자 등)이 많으면 점수가 내려가도록 카테고리화했습니다.
+- 그리고 이 점수가 60점 이하로 내려가면 이전 섹션에서 입력한 사람에게 문자가 전송됩니다! 건강한 식사를 할 수 있도록 주의하세요 🚨
+
+### 냉장고 비우기
+- 냉장고 비우기 메뉴를 누르면 스플래쉬 화면이 움직이고,
+- 내 냉장고에 있는 식재료를 이용한 음식을 gemini가 파악하여, 적당한 음식을 추천해 줍니다.
+    - 예를 들어, 닭고기가 있으면 닭볶음탕, 닭구이, 닭가슴살덮밥 등을 추천합니다.
+    - 필요한 재료와 이미 가지고 있는 재료를 구분해서 볼 수 있습니다.
 
 
 <br />
