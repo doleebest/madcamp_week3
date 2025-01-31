@@ -57,56 +57,45 @@
 <br>
 
 ## 🛠 주요 기능
-
-<style>
-  .grid-2x2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    justify-content: center;
-  }
-  
-  .grid-1x2 {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-</style>
-
 <table>
     <tr>
         <td align="center">메인화면</td>
-        <td align="center">기록하기</td>
+        <td align="center">냉장고 채우기</td>
     </tr>
     <tr>
-        <td align="center" class="grid-1x2">
-            <img src="https://github.com/user-attachments/assets/27ebe94b-d610-48b0-bc13-71472dfb106b" width="500" />
-            <img src="https://github.com/user-attachments/assets/2a8ff57d-e2df-492a-b53f-58dbdeed20ea" width="500" />
+        <td align="center">
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <img src="https://github.com/user-attachments/assets/27ebe94b-d610-48b0-bc13-71472dfb106b" width="245" />
+                <img src="https://github.com/user-attachments/assets/2a8ff57d-e2df-492a-b53f-58dbdeed20ea" width="245" />
+            </div>
         </td>
-        <td align="center" class="grid-2x2">
-            <img src="https://github.com/user-attachments/assets/ae9d7c7c-c6c5-48fd-9b33-25158a918742" width="500" />
-            <img src="https://github.com/user-attachments/assets/52144df8-aa51-4e17-9203-955652c63604" width="500" />
-            <img src="https://github.com/user-attachments/assets/0d3c1d36-2926-4ef6-9464-e9674c6bbcd2" width="500" />
-            <img src="https://github.com/user-attachments/assets/670e313d-b9c5-4d8a-8b42-634790cde808" width="500" />
+        <td align="center">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                <img src="https://github.com/user-attachments/assets/ae9d7c7c-c6c5-48fd-9b33-25158a918742" width="245" />
+                <img src="https://github.com/user-attachments/assets/52144df8-aa51-4e17-9203-955652c63604" width="245" />
+                <img src="https://github.com/user-attachments/assets/0d3c1d36-2926-4ef6-9464-e9674c6bbcd2" width="245" />
+                <img src="https://github.com/user-attachments/assets/670e313d-b9c5-4d8a-8b42-634790cde808" width="245" />
+            </div>
         </td>
     </tr>
     <tr>
-        <td align="center">추억하기</td>
-        <td align="center">대화하기</td>
+        <td align="center">정보 입력하기</td>
+        <td align="center">냉장고 비우기</td>
     </tr>
     <tr>
         <td align="center">
             <img src="https://github.com/user-attachments/assets/84c49ce6-1fd7-430d-a61a-18fbbfe7719a" width="500" />
         </td>
-        <td align="center" class="grid-2x2">
-            <img src="https://github.com/user-attachments/assets/24b3926f-9f8a-4948-9bce-01815fe691f4" width="500" />
-            <img src="https://github.com/user-attachments/assets/dd786376-62b2-4304-b752-1c5f8a72a658" width="500" />
-            <img src="https://github.com/user-attachments/assets/30cef6a1-0f9a-4f10-8ae1-4c148c99f668" width="500" />
-            <img src="https://github.com/user-attachments/assets/8882b990-6a28-431a-8f94-aad6f87a6963" width="500" />
+        <td align="center">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                <img src="https://github.com/user-attachments/assets/24b3926f-9f8a-4948-9bce-01815fe691f4" width="245" />
+                <img src="https://github.com/user-attachments/assets/dd786376-62b2-4304-b752-1c5f8a72a658" width="245" />
+                <img src="https://github.com/user-attachments/assets/30cef6a1-0f9a-4f10-8ae1-4c148c99f668" width="245" />
+                <img src="https://github.com/user-attachments/assets/8882b990-6a28-431a-8f94-aad6f87a6963" width="245" />
+            </div>
         </td>
     </tr>
 </table>
-
 
 
 
