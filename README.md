@@ -32,7 +32,7 @@
     </tr>
       <tr>
       <td align="center">Android, AI</a></td>
-      <td align="center">BE, CSS, AI</a></td>
+      <td align="center">BE, AI</a></td>
     </tr>
     </tr>
   </table>
